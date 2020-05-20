@@ -183,9 +183,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\HistoryHelper.cs" />
     <Compile Include="Helpers\ProjectsHelper.cs" />
     <Compile Include="Helpers\RoleHelper.cs" />
     <Compile Include="Helpers\RolesHelper.cs" />
+    <Compile Include="Helpers\TicketsHelper.cs" />
+    <Compile Include="Helpers\UsersHelper.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -203,11 +206,14 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModel\CustomUserData.cs" />
     <Compile Include="ViewModel\EmailModel.cs" />
+    <Compile Include="ViewModel\UserProfileVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\adminlte.min.css" />
     <Content Include="Content\all.min.css" />
     <Content Include="Content\datatables.min.css" />
+    <Content Include="Content\DataTables\dataTables.bootstrap4.css" />
+    <Content Include="Content\DataTables\select.bootstrap4.min.css" />
     <Content Include="Content\daterangepicker.css" />
     <Content Include="Content\icheck-bootstrap.min.css" />
     <Content Include="Content\jqvmap.min.css" />
@@ -258,7 +264,9 @@
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\Chart.min.js" />
     <Content Include="Scripts\dashboard.js" />
+    <Content Include="Scripts\DataTables\dataTables.bootstrap4.min.js" />
     <Content Include="Scripts\datatables.min.js" />
+    <Content Include="Scripts\DataTables\jquery.dataTables.min.js" />
     <Content Include="Scripts\daterangepicker.js" />
     <Content Include="Scripts\demo.js" />
     <Content Include="Scripts\jquery-ui.min.js" />
@@ -377,6 +385,9 @@
     <Content Include="Views\Admin\ManageRoles.cshtml" />
     <Content Include="Views\Projects\ManageProjectAssignments.cshtml" />
     <Content Include="Smtp.config" />
+    <Content Include="Views\Account\CustomLogOff.cshtml" />
+    <Content Include="Views\Home\UserProfile.cshtml" />
+    <Content Include="Views\Projects\AssignUsers.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

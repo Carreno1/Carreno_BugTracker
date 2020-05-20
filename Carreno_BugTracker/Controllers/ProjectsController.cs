@@ -16,9 +16,86 @@ namespace Carreno_BugTracker.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private ProjectsHelper projHelper = new ProjectsHelper();
+        private RolesHelper roleManager = new RolesHelper();
+        private AssignmentHelper assignHelper = new AssignmentHelper();
+
+        [Authorize (Roles = "Admin, Project Manager")]
+        public ActionResult AssignUsers(int projectId)
+        {
+
+            ViewBag.ProjectId = projectId;
+            if (User.IsInRole("Admin"))
+            {
+                ViewBag.ProjectManagerId = new SelectList(roleManager.UsersInRoles("Project Manager"), "Id", "FullName");
+            }
+            else
+            {
+                ViewBag.SubmitterIds = new MultiSelectList(roleManager.UsersInRoles("Submitter"), "Id", "FullName");
+                ViewBag.DeveloperIds = new MultiSelectList(roleManager.UsersInRoles("Developer"), "Id", "FullName");
+
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AssignUsers(int projectId, string projectManagerId, List<string> submitterIds, List<string> developerIds)
+        {
+            if (User.IsInRole("Admin"))
+            {
+                //Dealing with Project Managers
+                //Remove the current PM and then add the selected PM
+                var project = db.Projects.Find(projectId);
+                project.ProjectManagerId = projectManagerId;
+                db.SaveChanges();
+            }
+            else
+            {
+                #region Handle Submitters Project association
+               
+                //Remove all Submitters on the Project
+                foreach (var user in assignHelper.UsersOnProjectInRole(projectId, "Submitter"))
+                {
+                    projHelper.RemoveUserFromProject(user.Id, projectId);
+                }
+
+                //Add back all the selected Submitters
+                if (submitterIds != null)
+                {
+                    foreach (var submitterid in submitterIds)
+                    {
+                        projHelper.AddUserToProject(submitterid, projectId);
+                    }
+                }
+                #endregion
+
+                #region Handle Developer Project association
+                //Add back all the selected Developers
+
+                foreach (var user in assignHelper.UsersOnProjectInRole(projectId, "Developer"))
+                {
+                    projHelper.RemoveUserFromProject(user.Id, projectId);
+                }
+
+                //Add back all the selected Submitters
+                if (developerIds != null)
+                {
+                    foreach (var developerId in developerIds)
+                    {
+                        projHelper.AddUserToProject(developerId, projectId);
+                    }
+                }
+
+                #endregion
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
 
 
-        [Authorize(Roles = "Admin")]
+
+        [Authorize(Roles = "Project Manager, Admin")]
         public ActionResult ManageProjectAssignments()
         {
 
@@ -51,25 +128,46 @@ namespace Carreno_BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ManageProjectAssignments(List<string> userIds, List<int> projectIds)
+        public ActionResult ManageProjectAssignments(List<string> userIds, List<int> projectIds, bool addUser)
         {
             //If and only if I have chosen at least one person will I do the following operations..
-            if (userIds == null || projectIds == null)
+            if (userIds != null || projectIds != null)
             {
-                return RedirectToAction("ManageProjectAssignments");
 
-            }
-            //I can simply Add each of the selected Users to each of the Selected Projects
-            foreach (var userId in userIds)
-            {
-                foreach (var projectId in projectIds)
+                //I can simply Add each of the selected Users to each of the Selected Projects
+                if (addUser)
                 {
-                    projHelper.AddUserToProject(userId, projectId);
+                    foreach (var userId in userIds)
+                    {
+                        foreach (var projectId in projectIds)
+                        {
+                            projHelper.RemoveUserFromProject(userId, projectId);
+
+                        }
+                    }
+                    foreach (var userId in userIds)
+                    {
+                        foreach (var projectId in projectIds)
+                        {
+                            projHelper.AddUserToProject(userId, projectId);
+
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var userId in userIds)
+                    {
+                        foreach (var projectId in projectIds)
+                        {
+                            projHelper.RemoveUserFromProject(userId, projectId);
+
+                        }
+                    }
+
 
                 }
             }
-
-
 
 
             return RedirectToAction("ManageProjectAssignments");

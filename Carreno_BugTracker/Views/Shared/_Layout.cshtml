@@ -29,7 +29,13 @@
     <!-- summernote -->
     <link href="~/Content/summernote-bs4.css" rel="stylesheet" />
 
-    <link href="~/Content/datatables.min.css" rel="stylesheet" />
+
+    <link href="~/Content/DataTables/dataTables.bootstrap4.css" rel="stylesheet" />
+
+
+
+
+
 
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
@@ -50,6 +56,10 @@
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="@Url.Action("Contact", "Home")" class="nav-link">Contact</a>
                 </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="@Url.Action("UserProfile", "Home")" class="nav-link">Profile</a>
+                </li>
+
 
                 @Html.Partial("_LoginPartial")
             </ul>
@@ -58,15 +68,15 @@
 
             <!-- SEARCH FORM -->
             @*<form class="form-inline ml-3">
-                <div class="input-group input-group-sm">
-                    <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                    <div class="input-group-append">
-                        <button class="btn btn-navbar" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
+                    <div class="input-group input-group-sm">
+                        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                        <div class="input-group-append">
+                            <button class="btn btn-navbar" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </form>*@
+                </form>*@
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
@@ -227,26 +237,36 @@
                                     </a>
                                 </li>
                             </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="@Url.Action("Index", "Projects") " class="nav-link active">
+                                        <i class="menu-item-icon icon ion-ios-barcode-outline tx-22"></i>
+                                        <p>Manage Projects</p>
+                                    </a>
+                                </li>
+                            </ul>
+
+
                             @*<ul class="nav nav-treeview">
-        <li class="nav-item">
-            <a href="./index.html" class="nav-link active">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Dashboard v1</p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="./index2.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Dashboard v2</p>
-            </a>
-        </li>*@
+                                <li class="nav-item">
+                                    <a href="./index.html" class="nav-link active">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Dashboard v1</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="./index2.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Dashboard v2</p>
+                                    </a>
+                                </li>*@
                             @*<li class="nav-item">
-                <a href="./index3.html" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Dashboard v3</p>
-                </a>
-            </li>
-        </ul>*@
+                                        <a href="./index3.html" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Dashboard v3</p>
+                                        </a>
+                                    </li>
+                                </ul>*@
                         </li>
                         @*<li class="nav-item">
                                 <a href="pages/widgets.html" class="nav-link">
@@ -773,7 +793,6 @@
         <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
-
     <!-- jQuery -->
     <script src="~/Scripts/jquery.js"></script>
 
@@ -819,7 +838,14 @@
     <!-- AdminLTE for demo purposes -->
     <script src="~/Scripts/demo.js"></script>
 
-    <script src="~/Scripts/datatables.min.js"></script>
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap4.min.js"></script>
+
+
 
 
     @RenderSection("Scripts", required: false)

@@ -94,5 +94,7 @@ namespace Carreno_BugTracker.Models
         public System.Data.Entity.DbSet<Carreno_BugTracker.Models.TicketHistory> TicketHistories { get; set; }
 
         public System.Data.Entity.DbSet<Carreno_BugTracker.Models.TicketNotification> TicketNotifications { get; set; }
+
+        public System.Data.Entity.DbSet<Carreno_BugTracker.ViewModel.UserProfileVM> UserProfileVMs { get; set; }
     }
 }

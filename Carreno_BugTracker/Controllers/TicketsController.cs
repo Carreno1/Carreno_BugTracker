@@ -113,13 +113,45 @@ namespace Carreno_BugTracker.Controllers
         }
 
         // GET: Tickets/Edit/5
+        [Authorize(Roles ="Admin, Developer, Submitter, Project Manager")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Ticket ticket = db.Tickets.Find(id);
+
+            var currentUserId = User.Identity.GetUserId();
+
+            //I need some additional, more granular security to determine whether 
+            //"This is my ticket" depends on your role
+            //If I am a Developer:
+            var authorized = true; //or var authorized = new tickethelper(true)
+            if ((User.IsInRole("Developer") && ticket.DeveloperId != currentUserId) ||
+                (User.IsInRole("Submitter") && ticket.SubmitterId != currentUserId))
+            {
+                authorized = true;
+            }
+
+            
+            
+
+            //if (User.IsInRole("Project Manager"))
+            //{
+            //    var myTicketIds = db.Projects.Where(p => p.ProjectManagerId == currentUserId).SelectMany(p => p.Tickets).Select(t => t.Id);
+
+
+            //}
+
+            if (!authorized)
+            {
+                TempData["UnAuthorizedTicketAccess"] = $"You are not authorized to edit Ticket {id}";
+                return RedirectToAction("Index", "Home");
+            }
+
+
             if (ticket == null)
             {
                 return HttpNotFound();
@@ -138,13 +170,37 @@ namespace Carreno_BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,ProjectId,TicketTypeId,TicketStatusId,TicketPriorityId,SubmitterId,DeveloperId,Title,Description,Created,Updated,IsArchived")] Ticket ticket)
+        public ActionResult Edit([Bind(Include = "Id,ProjectId,TicketTypeId,TicketStatusId,TicketPriorityId,SubmitterId,DeveloperId,Title,Description")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
+                //I want to use AsNoTracking() to get a Memento Ticket object
+                var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
+
+
+                ticket.Updated = DateTime.Now;
+
                 db.Entry(ticket).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+
+                if (oldTicket.Title != ticket.Title)
+                {
+                    var newHistoryRecord = new TicketHistory();
+                    newHistoryRecord.ChangedOn = (DateTime)ticket.Updated;
+                    newHistoryRecord.UserId = User.Identity.GetUserId();
+                    newHistoryRecord.Property = "Title";
+                    newHistoryRecord.OldValue = oldTicket.Title;
+                    newHistoryRecord.NewValue = ticket.Title;
+                    newHistoryRecord.TicketId = ticket.Id;
+
+                    db.TicketHistories.Add(newHistoryRecord);
+                    db.SaveChanges();
+                    
+                }
+
+
+
+                return RedirectToAction("Index", "TicketHistories");
             }
             ViewBag.DeveloperId = new SelectList(db.Users, "Id", "FirstName", ticket.DeveloperId);
             ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);

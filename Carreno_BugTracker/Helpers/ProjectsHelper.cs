@@ -7,9 +7,14 @@ using System.Web;
 
 namespace Carreno_BugTracker.Helpers
 {
+    
     public class ProjectsHelper
     {
+
+
         ApplicationDbContext db = new ApplicationDbContext();
+
+
 
         public bool IsUserOnProject(string userId, int projectId)
         {
@@ -63,5 +68,6 @@ namespace Carreno_BugTracker.Helpers
             return db.Users.Where(u => u.Projects.All(p => p.Id != projectId)).ToList();
         }
 
+      
     }
 }

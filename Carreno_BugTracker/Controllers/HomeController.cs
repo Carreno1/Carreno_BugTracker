@@ -1,4 +1,6 @@
-﻿using Carreno_BugTracker.ViewModel;
+﻿using Carreno_BugTracker.Helpers;
+using Carreno_BugTracker.Models;
+using Carreno_BugTracker.ViewModel;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -13,9 +15,16 @@ using System.Web.Mvc;
 
 namespace Carreno_BugTracker.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
-        [Authorize]
+        private ApplicationDbContext db = new ApplicationDbContext();
+        private ProjectsHelper projHelper = new ProjectsHelper();
+        private TicketsHelper ticketHelper = new TicketsHelper();
+        private RolesHelper roleHelper = new RolesHelper();
+
+
+     
         public ActionResult Index()
         {
             return View();
@@ -24,6 +33,7 @@ namespace Carreno_BugTracker.Controllers
         {
             return View();
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -62,6 +72,26 @@ namespace Carreno_BugTracker.Controllers
 
 
             return View(new EmailModel());
+        }
+
+
+        public ActionResult UserProfile()
+        {
+            var model = new UserProfileVM();
+            var userId = User.Identity.GetUserId();
+            var user = db.Users.Find(userId);
+            model.AvatarPath = user.AvatarPath;
+            model.Email = user.Email;
+            model.FullName = user.FullName;
+            model.Id = userId;
+            //model.ProjectIn = projHelper.ListUserProjects(userId);
+            //model.ProjectOut = projHelper.ListOtherProjects(userId);
+            model.TicketsIn = ticketHelper.ListMyTickets();
+            model.Role = roleHelper.ListUserRoles(userId).FirstOrDefault();
+
+
+            return View(model);
+
         }
 
 
