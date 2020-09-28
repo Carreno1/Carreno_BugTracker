@@ -1,4 +1,5 @@
 ﻿using System;
+using Carreno_BugTracker.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;

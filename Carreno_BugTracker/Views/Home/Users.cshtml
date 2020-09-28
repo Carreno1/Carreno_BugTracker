@@ -1,0 +1,269 @@
+﻿@using Carreno_BugTracker.Models
+@using Carreno_BugTracker.ViewModel
+@using Carreno_BugTracker.Helpers
+
+@model DashboardViewModel
+
+@{
+    RolesHelper roleHelper = new RolesHelper();
+    ProjectsHelper projectsHelper = new ProjectsHelper();
+
+
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark" style="font-weight: bold; font-size:300%">Users</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <a style="cursor: pointer" data-card-widget="collapse">
+                    <div class="card-header">
+                        <h3 class="card-title" style="font-weight: bold">Admins</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+
+                                <i class="fas fa-arrow-alt-circle-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                </a>
+                <div class="card-body">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayName("Full Name")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("Email")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("Projects")
+                                </th>
+
+
+
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var user in Model.Admins)
+                            {
+                                <tr onclick="location.href = '@Url.Action("UserProfile", "Home", new { userId = user.Id })'" style="cursor: pointer">
+                                    <td>
+                                        @user.FullName
+                                    </td>
+                                    <td>
+                                        @user.Email
+                                    </td>
+                                    <td>
+                                        @user.Projects.Count()
+                                    </td>
+
+                                </tr>
+
+
+
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <a style="cursor: pointer" data-card-widget="collapse">
+                    <div class="card-header">
+                        <h3 class="card-title" style="font-weight: bold">Project Managers</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+
+                                <i class="fas fa-arrow-alt-circle-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                </a>
+                <div class="card-body">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayName("Full Name")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("Email")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("Projects")
+                                </th>
+
+
+
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var user in Model.ProjectManagers)
+                            {
+                                <tr onclick="location.href = '@Url.Action("UserProfile", "Home", new { userId = user.Id })'" style="cursor: pointer">
+                                    <td>
+                                        @user.FullName
+                                    </td>
+                                    <td>
+                                        @user.Email
+                                    </td>
+                                    <td>
+                                        @user.Projects.Count()
+                                    </td>
+
+                                </tr>
+
+
+
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <a style="cursor: pointer" data-card-widget="collapse">
+                    <div class="card-header">
+                        <h3 class="card-title" style="font-weight: bold">Developers</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+
+                                <i class="fas fa-arrow-alt-circle-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                </a>
+                <div class="card-body">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayName("Full Name")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("Email")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("Projects")
+                                </th>
+
+
+
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var user in Model.Developers)
+                            {
+                                <tr onclick="location.href = '@Url.Action("UserProfile", "Home", new { userId = user.Id })'" style="cursor: pointer">
+                                    <td>
+                                        @user.FullName
+                                    </td>
+                                    <td>
+                                        @user.Email
+                                    </td>
+                                    <td>
+                                        @user.Projects.Count()
+                                    </td>
+
+                                </tr>
+
+
+
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <a style="cursor: pointer" data-card-widget="collapse">
+                    <div class="card-header">
+                        <h3 class="card-title" style="font-weight: bold">Submitters</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+
+                                <i class="fas fa-arrow-alt-circle-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                </a>
+                <div class="card-body">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayName("Full Name")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("Email")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("Projects")
+                                </th>
+
+
+
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var user in Model.Submitters)
+                            {
+                                <tr onclick="location.href = '@Url.Action("UserProfile", "Home", new { userId = user.Id })'" style="cursor: pointer">
+                                    <td>
+                                        @user.FullName
+                                    </td>
+                                    <td>
+                                        @user.Email
+                                    </td>
+                                    <td>
+                                        @user.Projects.Count()
+                                    </td>
+
+                                </tr>
+
+
+
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

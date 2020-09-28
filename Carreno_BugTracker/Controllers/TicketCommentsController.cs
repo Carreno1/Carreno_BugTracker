@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Carreno_BugTracker.Models;
+using Microsoft.AspNet.Identity;
 
 namespace Carreno_BugTracker.Controllers
 {
@@ -54,6 +55,8 @@ namespace Carreno_BugTracker.Controllers
             if (ModelState.IsValid)
             {
                 db.TicketComments.Add(ticketComment);
+                ticketComment.Created = DateTime.Now;
+             
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

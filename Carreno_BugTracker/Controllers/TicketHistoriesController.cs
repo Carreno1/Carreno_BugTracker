@@ -64,21 +64,21 @@ namespace Carreno_BugTracker.Controllers
         }
 
         // GET: TicketHistories/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            TicketHistory ticketHistory = db.TicketHistories.Find(id);
-            if (ticketHistory == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.TicketId = new SelectList(db.Tickets, "Id", "SubmitterId", ticketHistory.TicketId);
-            ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", ticketHistory.UserId);
-            return View(ticketHistory);
-        }
+        //public ActionResult Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    TicketHistory ticketHistory = db.TicketHistories.Find(id);
+        //    if (ticketHistory == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    ViewBag.TicketId = new SelectList(db.Tickets, "Id", "SubmitterId", ticketHistory.TicketId);
+        //    ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", ticketHistory.UserId);
+        //    return View(ticketHistory);
+        //}
 
         // POST: TicketHistories/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -99,19 +99,19 @@ namespace Carreno_BugTracker.Controllers
         }
 
         // GET: TicketHistories/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            TicketHistory ticketHistory = db.TicketHistories.Find(id);
-            if (ticketHistory == null)
-            {
-                return HttpNotFound();
-            }
-            return View(ticketHistory);
-        }
+        //public ActionResult Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    TicketHistory ticketHistory = db.TicketHistories.Find(id);
+        //    if (ticketHistory == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(ticketHistory);
+        //}
 
         // POST: TicketHistories/Delete/5
         [HttpPost, ActionName("Delete")]

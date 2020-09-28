@@ -1,0 +1,174 @@
+﻿@{ 
+    Layout = null;
+
+}
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>BugHub | Log in</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Font Awesome -->
+    <link href="~/Content/all.min.css" rel="stylesheet" />
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- icheck bootstrap -->
+    <link href="~/Content/icheck-bootstrap.min.css" rel="stylesheet" />
+    <!-- Theme style -->
+    <link href="~/Content/adminlte.min.css" rel="stylesheet" />
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="shortcut icon" href="~/img/rsz_1rsz_bug.png" />
+
+</head>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo" style="font-size:300%">
+            <img src="~/img/rsz_1rsz_bug.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+                 style="opacity: .8">
+            <b>Bug</b>Hub
+
+
+        </div>
+        <!-- /.login-logo -->
+        <div class="card">
+            <div class="card-body login-card-body">
+                <p class="login-box-msg">Sign in to start your session</p>
+
+                @using (Html.BeginForm("DemoLoginAsync", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken();
+                    @Html.Hidden("emailKey", "DemoAdminEmail")
+
+                    <button type="Submit" class="btn btn-block">
+
+                        <div class="info-box">
+                            <span class="info-box-icon bg-red elevation-1"><i class="fas fa-user-astronaut"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text" style="font-size:large; font-weight:bold">Admin</span>
+                                <span class="info-box-number">
+
+                                    <small>Controls All</small>
+                                </span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+
+                    </button>
+
+
+                }
+                @using (Html.BeginForm("DemoLoginAsync", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken();
+                    @Html.Hidden("emailKey", "DemoPmEmail")
+
+                    <button type="Submit" class="btn btn-block">
+
+                        <div class="info-box">
+                            <span class="info-box-icon bg-green elevation-1"><i class="fas fa-calendar"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text" style="font-size:large; font-weight:bold">Project Manager</span>
+                                <span class="info-box-number">
+
+                                    <small>Assigns Users to Projects</small>
+                                </span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+
+                    </button>
+
+
+                }
+                @using (Html.BeginForm("DemoLoginAsync", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken();
+                    @Html.Hidden("emailKey", "DemoDevEmail")
+
+                    <button type="Submit" class="btn btn-block">
+
+                        <div class="info-box">
+                            <span class="info-box-icon bg-blue elevation-1"><i class="fas fa-laptop-code"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text" style="font-size:large; font-weight:bold">Developer</span>
+                                <span class="info-box-number">
+
+                                    <small>Manages Tickets Assigned to</small>
+                                </span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+
+                    </button>
+
+
+                }
+                @using (Html.BeginForm("DemoLoginAsync", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken();
+                    @Html.Hidden("emailKey", "DemoSubEmail")
+
+                    <button type="Submit" class="btn btn-block">
+
+                        <div class="info-box">
+                            <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-ticket-alt"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text" style="font-size:large; font-weight:bold">Submitter</span>
+                                <span class="info-box-number">
+
+                                    <small>Creates Tickets</small>
+                                </span>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+
+                    </button>
+
+
+                }
+
+                <!-- /.social-auth-links -->
+
+                <p class="mb-1">
+
+                    @Html.ActionLink("Already have an account?", "Login", "Account")
+
+                </p>
+                <p class="mb-1">
+                    @Html.ActionLink("Register a new account", "Register", "Account")
+                    @*<a href="register.cshtml" class="text-center">Register a new membership</a>*@
+                </p>
+
+            </div>
+            <!-- /.login-card-body -->
+        </div>
+    </div>
+    <!-- /.login-box -->
+    <!-- jQuery -->
+    <script src="~/Scripts/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/Scripts/adminlte.min.js"></script>
+
+</body>
+</html>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+

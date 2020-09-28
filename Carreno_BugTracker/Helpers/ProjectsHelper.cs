@@ -46,7 +46,7 @@ namespace Carreno_BugTracker.Helpers
 
         public void RemoveUserFromProject(string userId, int projectId)
         {
-            if (!IsUserOnProject(userId, projectId))
+            if (IsUserOnProject(userId, projectId))
             {
                 Project proj = db.Projects.Find(projectId);
                 var delUser = db.Users.Find(userId);

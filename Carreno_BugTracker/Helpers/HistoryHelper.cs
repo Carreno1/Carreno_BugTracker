@@ -9,15 +9,45 @@ namespace Carreno_BugTracker.Helpers
 {
     public class HistoryHelper
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-       public void RecordHistoricalChanges(Ticket oldTicket, Ticket newTicket)
+       private ApplicationDbContext db = new ApplicationDbContext();
+       public void ManageHistoryRecordCreation(Ticket oldTicket, Ticket newTicket)
         {
-            var userId = HttpContext.Current.User.Identity.GetUserId();
 
-            if (oldTicket.TicketPriorityId != newTicket.TicketPriorityId)
+            if (oldTicket.Title != newTicket.Title)
             {
-              
+
+                var newHistoryRecord = new TicketHistory
+                {
+                    ChangedOn = (DateTime)newTicket.Updated,
+                    UserId = HttpContext.Current.User.Identity.GetUserId(),
+                    Property = "DeveloperId",
+                    OldValue = oldTicket.DeveloperId,
+                    NewValue = newTicket.DeveloperId,
+                    TicketId = newTicket.Id
+
+                };
+
+                db.TicketHistories.Add(newHistoryRecord);
+
             }
+
+            if (oldTicket.DeveloperId != newTicket.DeveloperId)
+            {
+                var newHistoryRecord = new TicketHistory
+                {
+                    ChangedOn = (DateTime)newTicket.Updated,
+                    UserId = HttpContext.Current.User.Identity.GetUserId(),
+                    Property = "DeveloperId",
+                    OldValue = oldTicket.DeveloperId,
+                    NewValue = newTicket.DeveloperId,
+                    TicketId = newTicket.Id
+                };
+
+                db.TicketHistories.Add(newHistoryRecord);
+            
+            }
+
+            db.SaveChanges();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Web.Mvc;
 using Carreno_BugTracker.Helpers;
 using Carreno_BugTracker.Models;
 using Carreno_BugTracker.ViewModel;
+using Microsoft.AspNet.Identity;
 
 namespace Carreno_BugTracker.Controllers
 {
@@ -16,7 +18,7 @@ namespace Carreno_BugTracker.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private ProjectsHelper projHelper = new ProjectsHelper();
-        private RolesHelper roleManager = new RolesHelper();
+        private RolesHelper roleHelper = new RolesHelper();
         private AssignmentHelper assignHelper = new AssignmentHelper();
 
         [Authorize (Roles = "Admin, Project Manager")]
@@ -26,12 +28,18 @@ namespace Carreno_BugTracker.Controllers
             ViewBag.ProjectId = projectId;
             if (User.IsInRole("Admin"))
             {
-                ViewBag.ProjectManagerId = new SelectList(roleManager.UsersInRoles("Project Manager"), "Id", "FullName");
+                //var pm = assignHelper.UsersOnProjectInRole(projectId, "Project Manager").FirstOrDefault();
+                //var pmId = pm != null ? pm.Id : null;
+                var pm = db.Projects.AsNoTracking().FirstOrDefault(p => p.Id == projectId).ProjectManagerId;
+                ViewBag.ProjectManagerId = new SelectList(roleHelper.UsersInRoles("Project Manager"), "Id", "FullName", pm);
             }
             else
             {
-                ViewBag.SubmitterIds = new MultiSelectList(roleManager.UsersInRoles("Submitter"), "Id", "FullName");
-                ViewBag.DeveloperIds = new MultiSelectList(roleManager.UsersInRoles("Developer"), "Id", "FullName");
+                var subIds = assignHelper.UsersOnProjectInRole(projectId, "Submitter").Select(u => u.Id);
+                ViewBag.SubmitterIds = new MultiSelectList(roleHelper.UsersInRoles("Submitter"), "Id", "FullName");
+
+                var devIds = assignHelper.UsersOnProjectInRole(projectId, "Developer").Select(u => u.Id);
+                ViewBag.DeveloperIds = new MultiSelectList(roleHelper.UsersInRoles("Developer"), "Id", "FullName");
 
             }
 
@@ -185,25 +193,47 @@ namespace Carreno_BugTracker.Controllers
         // GET: Projects
         public ActionResult Index()
         {
+            var user = db.Users.Find(User.Identity.GetUserId());
+
+            //if (roleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Admin" || roleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Project Manager")
+            //{
+            //     return View(db.Projects.ToList())
+            //}
+            if (roleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Developer" || roleHelper.ListUserRoles(user.Id).FirstOrDefault() == "Submitter")
+            {
+                return View(projHelper.ListUserProjects(user.Id));
+            }
+
             return View(db.Projects.ToList());
         }
 
         // GET: Projects/Details/5
         public ActionResult Details(int? id)
         {
+            
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Project project = db.Projects.Find(id);
+            
             if (project == null)
             {
                 return HttpNotFound();
             }
-            return View(project);
+            ProjectViewModel projectModel = new ProjectViewModel();
+
+            projectModel.Project = project;
+            projectModel.AllPMs = project.GetProjectManager();
+            //projectModel.Tickets = project.Tickets.ToList();
+            
+
+
+            return View(projectModel);
         }
 
         // GET: Projects/Create
+        [Authorize(Roles ="Admin, Project Manager")]
         public ActionResult Create()
         {
             return View();
@@ -214,17 +244,24 @@ namespace Carreno_BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Description,ProjectManagerId,Updated,isArchived")] Project project)
+        [Authorize(Roles = "Admin, Project Manager")]
+        //public ActionResult Create([Bind(Include = "Id,Name,Description,ProjectManagerId,Updated,isArchived")] Project project)
+        public ActionResult Create(string name, string description)
         {
             if (ModelState.IsValid)
             {
-                db.Projects.Add(project);
-                project.Created = DateTime.Now;
+                var newProject = new Project
+                {
+                    Name = name,
+                    Description = description
+                };
+                db.Projects.Add(newProject);
+                newProject.Created = DateTime.Now;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(project);
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: Projects/Edit/5

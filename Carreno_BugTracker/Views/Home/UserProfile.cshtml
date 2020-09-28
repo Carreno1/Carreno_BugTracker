@@ -1,102 +1,291 @@
-﻿@model Carreno_BugTracker.ViewModel.UserProfileVM
+﻿@using Carreno_BugTracker.Models
+@using Carreno_BugTracker.ViewModel
+@using Carreno_BugTracker.Helpers
 
-@{
-    ViewBag.Title = "UserProfile";
+@model UserProfileVM
+
+@{ 
+    RolesHelper rolesHelper = new RolesHelper();
+    ProjectsHelper projectsHelper = new ProjectsHelper();
+    UserHelper userHelper = new UserHelper();
+
 }
 
-<h2>UserProfile</h2>
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row align-content-center">
+                <div class="col align-content-center">
+                    <h1 class="m-0 text-center" style="font-weight: bold; font-size:300%">@Model.User.FirstName's Profile</h1>
+                </div><!-- /.col -->
+             
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
 
-@Html.DisplayFor(m => m.FullName)
+                <div class="">
+                    <div class="image text-center">
+                        <img src="@userHelper.GetUserAvatar()" class="wd-32 rounded-circle" alt="User Image">
+                    </div>
+                    <div class="info">
 
-@Html.DisplayFor(m => m.Role)
+                    </div>
+                </div>
 
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayName("Developer")
-            </th>
-            <th>
-                @Html.DisplayName("Project")
-            </th>
-            <th>
-                @Html.DisplayName("Submitter")
-            </th>
-            <th>
-                @Html.DisplayName("Priority")
-            </th>
-            <th>
-                @Html.DisplayName("Status")
-            </th>
-            <th>
-                @Html.DisplayName("Type")
-            </th>
-            <th>
-                @Html.DisplayName("Title")
-            </th>
-            <th>
-                @Html.DisplayName("Description")
-            </th>
-            <th>
-                @Html.DisplayName("Created")
-            </th>
-            <th>
-                @Html.DisplayName("Updated")
-            </th>
-            <th>
-                @Html.DisplayName("Archived")
-            </th>
-            <th></th>
-        </tr>
+                @Model.User.FirstName
+                @Model.User.LastName
 
-    </thead>
+                @Model.UserRole
+                @*@Html.DisplayFor(m => m.Role)*@
+            </div>      
+            
+        </div>
 
-    <tbody>
-        @foreach (var item in Model.TicketsIn)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Developer.FirstName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Project.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Submitter.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TicketPriority.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TicketStatus.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TicketType.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Created)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Updated)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsArchived)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
-                    @Html.ActionLink("Create Tickets", "Create", "TicketComments", new { projectId = item.Id }, null)
+        <div class="row">
+            <div class="col-12 col-sm-6 col-md-3">
+                <a href="@Url.Action("ManageProjectAssignments", "Projects")" style="color:black">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-cyan elevation-1"><i class="fas fa-user-friends"></i></span>
 
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        <div class="info-box-content">
+                            <span class="info-box-text" style="font-size:large; font-weight:bold">Assign Developers</span>
+                            <span class="info-box-number">
+
+                                <small></small>
+                            </span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-3">
+                <a href="@Url.Action("ManageProjectAssignments", "Projects")" style="color:black">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-cyan elevation-1"><i class="fas fa-user-friends"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text" style="font-size:large; font-weight:bold">Assign Developers</span>
+                            <span class="info-box-number">
+
+                                <small></small>
+                            </span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-3">
+                <a href="@Url.Action("ManageProjectAssignments", "Projects")" style="color:black">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-cyan elevation-1"><i class="fas fa-user-friends"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text" style="font-size:large; font-weight:bold">Assign Developers</span>
+                            <span class="info-box-number">
+
+                                <small></small>
+                            </span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-3">
+                <a href="@Url.Action("ManageProjectAssignments", "Projects")" style="color:black">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-user-astronaut"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text" style="font-size:large; font-weight:bold">Role:</span>
+                            <span class="info-box-number">
+
+                                <small></small>
+                            </span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                </a>
+            </div>
+
+        </div>
+      
+       
+        <div class="row">
+            <div class="col-12">
+                <div class="card collapsed-card">
+                    <a style="cursor: pointer" data-card-widget="collapse">
+                        <div class="card-header">
+                            <h3 class="card-title" style="font-weight: bold">Tickets</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+
+                                    <i class="fas fa-arrow-alt-circle-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="card-body">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayName("Ticket")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Description")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Submitter")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Created")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Priority")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Status")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Type")
+                                    </th>
+
+
+
+
+
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var ticket in Model.Tickets)
+                                {
+                                    <tr onclick="location.href = '@Url.Action("Dashboard", "Tickets", new { id = ticket.Id })'" style="cursor: pointer">
+                                        <td>
+                                            @ticket.Title
+                                        </td>
+                                        <td>
+                                            @ticket.Description
+                                        </td>
+                                        <td>
+                                            @ticket.Submitter.FullName
+                                        </td>
+                                        <td>
+                                            @ticket.Created
+                                        </td>
+                                        <td>
+                                            @ticket.TicketPriority.Name
+                                        </td>
+                                        <td>
+                                            @ticket.TicketStatus.Name
+                                        </td>
+                                        <td>
+                                            @ticket.TicketType.Name
+                                        </td>
+
+
+                                    </tr>
+
+
+
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card collapsed-card">
+                    <a style="cursor: pointer" data-card-widget="collapse">
+                        <div class="card-header">
+                            <h3 class="card-title" style="font-weight: bold">Projects Assigned To</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+
+                                    <i class="fas fa-arrow-alt-circle-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="card-body">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayName("Ticket")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Description")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Submitter")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Created")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Priority")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Status")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Type")
+                                    </th>
+
+
+
+
+
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (var ticket in Model.Tickets)
+                                {
+                                    <tr onclick="location.href = '@Url.Action("Dashboard", "Tickets", new { id = ticket.Id })'" style="cursor: pointer">
+                                        <td>
+                                            @ticket.Title
+                                        </td>
+                                        <td>
+                                            @ticket.Description
+                                        </td>
+                                        <td>
+                                            @ticket.Submitter.FullName
+                                        </td>
+                                        <td>
+                                            @ticket.Created
+                                        </td>
+                                        <td>
+                                            @ticket.TicketPriority.Name
+                                        </td>
+                                        <td>
+                                            @ticket.TicketStatus.Name
+                                        </td>
+                                        <td>
+                                            @ticket.TicketType.Name
+                                        </td>
+
+
+                                    </tr>
+
+
+
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>

@@ -7,6 +7,7 @@ namespace Carreno_BugTracker.Migrations
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
+    using System.Web.Configuration;
 
     internal sealed class Configuration : DbMigrationsConfiguration<Carreno_BugTracker.Models.ApplicationDbContext>
     {
@@ -52,7 +53,7 @@ namespace Carreno_BugTracker.Migrations
 
             var userStore = new UserStore<ApplicationUser>(context);
             var userManager = new UserManager<ApplicationUser>(userStore);
-
+            var demoPassword = WebConfigurationManager.AppSettings["DemoPassword"];
             if (!context.Users.Any(u => u.Email == "michaelcarrenocc@gmail.com"))
             {
                 var user = new ApplicationUser
@@ -61,19 +62,75 @@ namespace Carreno_BugTracker.Migrations
                     Email = "michaelcarrenocc@gmail.com",
                     FirstName = "Michael",
                     LastName = "Carreno",
-
+                    AvatarPath = "/Avatars/Default_Avatar.png"
                 };
 
                 userManager.Create(user, "Abc&123!");
                 userManager.AddToRole(user.Id, "Admin");
 
+            }
 
+            if (!context.Users.Any(u => u.Email == "demoadmin@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser
+                {
+                    UserName = "demoadmin@mailinator.com",
+                    Email = "demoadmin@mailinator.com",
+                    FirstName = "Dan",
+                    LastName = "Man",
+                    AvatarPath = "/Avatars/Default_Avatar.png"
 
+                }, demoPassword);
 
+            }
+
+            if (!context.Users.Any(u => u.Email == "demopm@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser
+                {
+                    UserName = "demopm@mailinator.com",
+                    Email = "demopm@mailinator.com",
+                    FirstName = "Sandy",
+                    LastName = "Man",
+                    AvatarPath = "/Avatars/Default_Avatar.png"
+
+                }, demoPassword);
+
+            }
+
+            if (!context.Users.Any(u => u.Email == "demodev@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser
+                {
+                    UserName = "demodev@mailinator.com",
+                    Email = "demodev@mailinator.com",
+                    FirstName = "Handy",
+                    LastName = "Man",
+                    AvatarPath = "/Avatars/Default_Avatar.png"
+
+                }, demoPassword);
+
+            }
+
+            if (!context.Users.Any(u => u.Email == "demosub@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser
+                {
+                    UserName = "demosub@mailinator.com",
+                    Email = "demosub@mailinator.com",
+                    FirstName = "Senor",
+                    LastName = "Man",
+                    AvatarPath = "/Avatars/Default_Avatar.png"
+
+                }, demoPassword);
 
             }
 
             #endregion
+
+
+
+
 
             #region load up ticket types
 
@@ -85,6 +142,18 @@ namespace Carreno_BugTracker.Migrations
                 new TicketType { Name = "Videos" }
                 );
             #endregion
+
+            var adminId = userManager.FindByEmail("demoadmin@mailinator.com").Id;
+            userManager.AddToRole(adminId, "Admin");
+            var pmId = userManager.FindByEmail("demopm@mailinator.com").Id;
+            userManager.AddToRole(pmId, "Project Manager");
+            var devId = userManager.FindByEmail("demodev@mailinator.com").Id;
+            userManager.AddToRole(devId, "Developer");
+            var subId = userManager.FindByEmail("demosub@mailinator.com").Id;
+            userManager.AddToRole(subId, "Submitter");
+
+
+
 
             #region load up ticket priorities
 

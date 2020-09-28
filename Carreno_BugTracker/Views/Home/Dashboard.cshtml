@@ -1,1 +1,40 @@
-﻿
+﻿@using Carreno_BugTracker.ViewModel
+@model DashboardViewModel
+
+@{ 
+    ViewBag.Title = "Dashboard";
+}
+
+<div class="pd-30">
+    <h4 class="tx-gray-800 mg-b-5">Dashboard</h4>
+</div>
+
+<div class="br-pagebody mg-t-5 pd-x-30">
+    Ticket Count: @Model.TicketCount <br />
+    High Priority Ticket Count: @Model.HighPriorityTicketCount <br />
+    New Ticket Count: @Model.NewTicketCount <br />
+    Total Comments: @Model.TotalComments
+
+    <hr />
+
+    Project Count: @Model.ProjectVM.ProjectCount <br />
+    All PMs:
+    @foreach(var pm in Model.ProjectVM.AllPMs)
+    {
+        <h3>@pm.FullName</h3>
+    }
+
+    <br />
+
+    All Projects : <br />
+
+    <table class="table">
+
+
+
+
+    </table>
+
+
+
+</div>

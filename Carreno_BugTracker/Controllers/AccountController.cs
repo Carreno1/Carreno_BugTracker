@@ -1,17 +1,18 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
+﻿using Carreno_BugTracker.Helpers;
+using Carreno_BugTracker.Models;
+using Carreno_BugTracker.ViewModel;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Carreno_BugTracker.Models;
-using System.Web.Configuration;
+using System;
+using System.EnterpriseServices;
+using System.IO;
+using System.Linq;
 using System.Net.Mail;
-using Carreno_BugTracker.ViewModel;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Configuration;
+using System.Web.Mvc;
 
 namespace Carreno_BugTracker.Controllers
 {
@@ -60,9 +61,28 @@ namespace Carreno_BugTracker.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("CustomLogOff", "Account");
+            }
+
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
+
+        [AllowAnonymous]
+        public ActionResult DemoLogin()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+
+            }
+
+            return View();
+        }
+
 
         //
         // POST: /Account/Login
@@ -91,8 +111,37 @@ namespace Carreno_BugTracker.Controllers
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
+
             }
         }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DemoLoginAsync(string emailKey)
+        {
+
+            var email = WebConfigurationManager.AppSettings[emailKey];
+            var password = WebConfigurationManager.AppSettings["DemoPassword"];
+
+            // This doesn't count login failures towards account lockout
+            // To enable password failures to trigger account lockout, change to shouldLockout: true
+            var result = await SignInManager.PasswordSignInAsync(email, password, false, shouldLockout: false);
+            switch (result)
+            {
+            
+
+
+
+                case SignInStatus.Success:
+                    return RedirectToAction("Index", "Home");
+                case SignInStatus.Failure:
+                default:
+                    return RedirectToAction("Login", "Account");
+            }
+        }
+
+
 
         //
         // GET: /Account/VerifyCode
@@ -154,14 +203,46 @@ namespace Carreno_BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Register everyone with a default avatar in case they choose not to use one
                 var user = new ApplicationUser 
                 { 
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     UserName = model.Email,
-                    Email = model.Email 
+                    Email = model.Email,
+                    EmailConfirmed = true,
+                    AvatarPath = "/Avatars/Default_Avatar.png"
 
                 };
+
+                //Check to see if the registered user chose a custom Avatar
+                if (model.Avatar != null)
+                {
+                    //What if the user chose a pdf for their avatar?
+                    //A check that makes sure the chosen file can be used
+
+
+
+
+                    var justFileName = Path.GetFileNameWithoutExtension(model.Avatar.FileName);
+                    //run filename without ext through slugger
+                    justFileName = StringUtilities.URLFriendly(justFileName);
+
+                    //finally add unique date stamp
+                    justFileName = $"{justFileName}-{DateTime.Now.Ticks}";
+                    justFileName = $"{justFileName}{Path.GetExtension(model.Avatar.FileName)}";
+
+
+
+                    user.AvatarPath = $"/Avatars/{justFileName}";
+
+                    model.Avatar.SaveAs(Path.Combine(Server.MapPath("~/Avatars/"), justFileName));
+
+                    //We go through the process of saving the image and storing its path 
+
+                }
+
+
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -445,7 +526,13 @@ namespace Carreno_BugTracker.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
+        }
+
+        public ActionResult CustomLogOff()
+        {
+            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            return RedirectToAction("Login", "Account");
         }
 
         //

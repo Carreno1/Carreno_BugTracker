@@ -16,6 +16,8 @@ namespace Carreno_BugTracker.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         private RolesHelper roleHelper = new RolesHelper();
 
+
+
         // GET: Admin
         public ActionResult ManageRoles()
         {

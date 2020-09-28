@@ -1,71 +1,75 @@
 ﻿@model IEnumerable<Carreno_BugTracker.Models.TicketNotification>
 
 @{
-    Layout = null;
+    ViewBag.Title = "Ticket Notifications";
 }
 
-<!DOCTYPE html>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-</head>
-<body>
-    <p>
-        @Html.ActionLink("Create New", "Create")
-    </p>
-    <table class="table">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Recipient.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sender.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ticket.SubmitterId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsRead)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NotificationBody)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Created)
-            </th>
-            <th></th>
-        </tr>
-    
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Recipient.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sender.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ticket.SubmitterId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsRead)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NotificationBody)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Created)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-            </td>
-        </tr>
-    }
-    
-    </table>
-</body>
-</html>
+    <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <h2>@ViewBag.Title</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+
+
+                <p>
+                    @Html.ActionLink("Create New", "Create")
+                </p>
+                <table class="table table-striped table-bordered">
+
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Created)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.IsRead)
+                            </th>
+                            <th>
+                                @Html.DisplayName("Recipient")
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Subject)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.NotificationBody)
+                            </th>
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Created)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IsRead)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Recipient.Email)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Subject)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NotificationBody)
+                                </td>
+
+
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>

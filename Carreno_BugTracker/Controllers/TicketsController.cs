@@ -16,6 +16,23 @@ namespace Carreno_BugTracker.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private ProjectsHelper projHelper = new ProjectsHelper();
+        private HistoryHelper historyHelper = new HistoryHelper();
+        private NotificationHelper notificationHelper = new NotificationHelper();
+        private RecordManager recordHelper = new RecordManager();
+
+        //I want to include the Ticket Attachment functionality in my Ticket Dashboard
+        public ActionResult Dashboard(int id)
+        {
+
+            return View(db.Tickets.Find(id));
+        }
+
+
+
+
+
+
+
 
         // GET: Tickets
         public ActionResult Index()
@@ -40,7 +57,7 @@ namespace Carreno_BugTracker.Controllers
         }
 
         // GET: Tickets/Create
-        //[Authorize(Roles = "Submitter")]
+        [Authorize(Roles = "Submitter")]
         public ActionResult Create(int? projectId)
         {
             ViewBag.DeveloperId = new SelectList(db.Users, "Id", "FirstName");
@@ -76,6 +93,7 @@ namespace Carreno_BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize (Roles = "Submitter")]
         public ActionResult Create([Bind(Include = "ProjectId,TicketTypeId,TicketPriorityId,Title,Description")] Ticket ticket)
         {
             if (ModelState.IsValid)
@@ -132,7 +150,7 @@ namespace Carreno_BugTracker.Controllers
             if ((User.IsInRole("Developer") && ticket.DeveloperId != currentUserId) ||
                 (User.IsInRole("Submitter") && ticket.SubmitterId != currentUserId))
             {
-                authorized = true;
+                authorized = false;
             }
 
             
@@ -156,12 +174,9 @@ namespace Carreno_BugTracker.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.DeveloperId = new SelectList(db.Users, "Id", "FirstName", ticket.DeveloperId);
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
-            ViewBag.SubmitterId = new SelectList(db.Users, "Id", "FirstName", ticket.SubmitterId);
+            ViewBag.DeveloperId = new SelectList(db.Users, "Id", "Email", ticket.DeveloperId);
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
             ViewBag.TicketStatusId = new SelectList(db.TicketStatus, "Id", "Name", ticket.TicketStatusId);
-            ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
             return View(ticket);
         }
 
@@ -170,73 +185,53 @@ namespace Carreno_BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,ProjectId,TicketTypeId,TicketStatusId,TicketPriorityId,SubmitterId,DeveloperId,Title,Description")] Ticket ticket)
+        public ActionResult Edit([Bind(Include = "Id,ProjectId,TicketTypeId,TicketStatusId,TicketPriorityId,SubmitterId,DeveloperId,Title,Created,Description")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
-                //I want to use AsNoTracking() to get a Memento Ticket object
-                var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
+                var userId = User.Identity.GetUserId();
+                var user = db.Users.Find(userId);
 
-
-                ticket.Updated = DateTime.Now;
-
-                db.Entry(ticket).State = EntityState.Modified;
-                db.SaveChanges();
-
-                if (oldTicket.Title != ticket.Title)
+                if (User.IsInRole("Developer") && userId == ticket.DeveloperId || User.IsInRole("Admin") || User.IsInRole("Project Manager") && ticket.Project.ProjectManagerId == userId || User.IsInRole("Submitter"))
                 {
-                    var newHistoryRecord = new TicketHistory();
-                    newHistoryRecord.ChangedOn = (DateTime)ticket.Updated;
-                    newHistoryRecord.UserId = User.Identity.GetUserId();
-                    newHistoryRecord.Property = "Title";
-                    newHistoryRecord.OldValue = oldTicket.Title;
-                    newHistoryRecord.NewValue = ticket.Title;
-                    newHistoryRecord.TicketId = ticket.Id;
 
-                    db.TicketHistories.Add(newHistoryRecord);
+                    //I want to use AsNoTracking() to get a Memento Ticket object
+                    var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
+
+
+                    ticket.Updated = DateTime.Now;
+
+                    db.Entry(ticket).State = EntityState.Modified;
                     db.SaveChanges();
-                    
+
+                    //Use the Histoy Helper to intelligently create the appropriate records
+                    historyHelper.ManageHistoryRecordCreation(oldTicket, ticket);
+
+                    //Use the Notification Helper to intelligently create the appropriate records
+                    notificationHelper.ManageNotifications(oldTicket, ticket);
+                    //recordHelper.ManageChangeRecords(oldTicket, ticket);
+
+                    ViewBag.DeveloperId = new SelectList(db.Users, "Id", "FirstName", ticket.DeveloperId);
+                    ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
+                    ViewBag.SubmitterId = new SelectList(db.Users, "Id", "FirstName", ticket.SubmitterId);
+                    ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
+                    ViewBag.TicketStatusId = new SelectList(db.TicketStatus, "Id", "Name", ticket.TicketStatusId);
+                    ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
+                    return RedirectToAction("Index", "TicketHistories");
+
+
+                }
+                else
+                {
+                    return View("Error");
                 }
 
-
-
-                return RedirectToAction("Index", "TicketHistories");
-            }
-            ViewBag.DeveloperId = new SelectList(db.Users, "Id", "FirstName", ticket.DeveloperId);
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectId);
-            ViewBag.SubmitterId = new SelectList(db.Users, "Id", "FirstName", ticket.SubmitterId);
-            ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
-            ViewBag.TicketStatusId = new SelectList(db.TicketStatus, "Id", "Name", ticket.TicketStatusId);
-            ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
-            return View(ticket);
-        }
-
-        // GET: Tickets/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Ticket ticket = db.Tickets.Find(id);
-            if (ticket == null)
-            {
-                return HttpNotFound();
+        
             }
             return View(ticket);
         }
 
-        // POST: Tickets/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Ticket ticket = db.Tickets.Find(id);
-            db.Tickets.Remove(ticket);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
+       
         protected override void Dispose(bool disposing)
         {
             if (disposing)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 using System.Web.Mvc.Html;
 
 namespace Carreno_BugTracker.Models
@@ -93,6 +94,11 @@ namespace Carreno_BugTracker.Models
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
     
+        public HttpPostedFileBase Avatar { get; set; }
+
+
+
+
     }
 
 
