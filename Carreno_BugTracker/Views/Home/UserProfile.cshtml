@@ -1,6 +1,7 @@
 ﻿@using Carreno_BugTracker.Models
 @using Carreno_BugTracker.ViewModel
 @using Carreno_BugTracker.Helpers
+@using Microsoft.AspNet.Identity
 
 @model UserProfileVM
 
@@ -35,60 +36,27 @@
                 </div>
 
 
-                @Model.User.FirstName
-                @Model.User.LastName
-
-                @Model.UserRole
-                @*@Html.DisplayFor(m => m.Role)*@
+            
             </div>      
             
         </div>
 
         <div class="row">
+            
+
+           
+
             <div class="col-12 col-sm-6 col-md-3">
                 <a href="@Url.Action("ManageProjectAssignments", "Projects")" style="color:black">
                     <div class="info-box">
                         <span class="info-box-icon bg-cyan elevation-1"><i class="fas fa-user-friends"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text" style="font-size:large; font-weight:bold">Assign Developers</span>
-                            <span class="info-box-number">
-
-                                <small></small>
+                            <span class="info-box-text" style="font-size:large; font-weight:bold">Full Name: 
                             </span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-12 col-sm-6 col-md-3">
-                <a href="@Url.Action("ManageProjectAssignments", "Projects")" style="color:black">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-cyan elevation-1"><i class="fas fa-user-friends"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text" style="font-size:large; font-weight:bold">Assign Developers</span>
                             <span class="info-box-number">
 
-                                <small></small>
-                            </span>
-                        </div>
-                        <!-- /.info-box-content -->
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-12 col-sm-6 col-md-3">
-                <a href="@Url.Action("ManageProjectAssignments", "Projects")" style="color:black">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-cyan elevation-1"><i class="fas fa-user-friends"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text" style="font-size:large; font-weight:bold">Assign Developers</span>
-                            <span class="info-box-number">
-
-                                <small></small>
+                                <small>@Model.User.FirstName @Model.User.LastName</small>
                             </span>
                         </div>
                         <!-- /.info-box-content -->
@@ -102,10 +70,11 @@
                         <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-user-astronaut"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text" style="font-size:large; font-weight:bold">Role:</span>
+                            <span class="info-box-text" style="font-size:large; font-weight:bold">Role: 
+                            </span>
                             <span class="info-box-number">
 
-                                <small></small>
+                                <small>@Model.UserRole</small>
                             </span>
                         </div>
                         <!-- /.info-box-content -->
@@ -118,7 +87,7 @@
        
         <div class="row">
             <div class="col-12">
-                <div class="card collapsed-card">
+                <div class="card">
                     <a style="cursor: pointer" data-card-widget="collapse">
                         <div class="card-header">
                             <h3 class="card-title" style="font-weight: bold">Tickets</h3>
@@ -202,7 +171,7 @@
                 </div>
             </div>
             <div class="col-12">
-                <div class="card collapsed-card">
+                <div class="card">
                     <a style="cursor: pointer" data-card-widget="collapse">
                         <div class="card-header">
                             <h3 class="card-title" style="font-weight: bold">Projects Assigned To</h3>
@@ -219,26 +188,21 @@
                             <thead>
                                 <tr>
                                     <th>
-                                        @Html.DisplayName("Ticket")
+                                        @Html.DisplayName("Name")
                                     </th>
                                     <th>
                                         @Html.DisplayName("Description")
                                     </th>
                                     <th>
-                                        @Html.DisplayName("Submitter")
+                                        @Html.DisplayName("Ticket Count")
                                     </th>
                                     <th>
-                                        @Html.DisplayName("Created")
+                                        @Html.DisplayName("Dev Count")
                                     </th>
                                     <th>
-                                        @Html.DisplayName("Priority")
+                                        @Html.DisplayName("Submitter Count")
                                     </th>
-                                    <th>
-                                        @Html.DisplayName("Status")
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("Type")
-                                    </th>
+                                   
 
 
 
@@ -248,29 +212,23 @@
                             </thead>
 
                             <tbody>
-                                @foreach (var ticket in Model.Tickets)
+                                @foreach (var project in Model.ProjectIn)
                                 {
-                                    <tr onclick="location.href = '@Url.Action("Dashboard", "Tickets", new { id = ticket.Id })'" style="cursor: pointer">
+                                    <tr onclick="location.href = '@Url.Action("Details", "Projects", new { id = project.Id })'" style="cursor: pointer">
                                         <td>
-                                            @ticket.Title
+                                            @project.Name
                                         </td>
                                         <td>
-                                            @ticket.Description
+                                            @project.Description
                                         </td>
                                         <td>
-                                            @ticket.Submitter.FullName
+                                            @project.Tickets.Count()
                                         </td>
                                         <td>
-                                            @ticket.Created
+                                            @project.GetDevelopers().Count()
                                         </td>
                                         <td>
-                                            @ticket.TicketPriority.Name
-                                        </td>
-                                        <td>
-                                            @ticket.TicketStatus.Name
-                                        </td>
-                                        <td>
-                                            @ticket.TicketType.Name
+                                            @project.GetSubmitters().Count()
                                         </td>
 
 

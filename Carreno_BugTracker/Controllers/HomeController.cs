@@ -148,7 +148,8 @@ namespace Carreno_BugTracker.Controllers
             }
             model.User = user;
             model.UserRole = roleHelper.ListUserRoles(userId).FirstOrDefault();
-
+            model.Tickets = ticketHelper.ListMyTickets();
+            model.ProjectIn = projHelper.ListUserProjects(userId);
            
 
             //model.ProjectIn = projHelper.ListUserProjects(userId);
